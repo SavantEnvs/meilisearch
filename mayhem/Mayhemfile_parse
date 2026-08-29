@@ -1,0 +1,14 @@
+# Meilisearch filter-parser in-process libFuzzer target (additive mayhem/fuzz port
+# of upstream's crates/filter-parser/fuzz parse harness): feeds bytes as UTF-8 into
+# FilterCondition::parse and treats an ErrorKind::InternalError as a defect.
+project: savantenvs/meilisearch
+target: parse
+image: savantenvs/meilisearch:latest
+
+cmds:
+  - cmd: /mayhem/parse
+    libfuzzer: true
+
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/parse/testsuite

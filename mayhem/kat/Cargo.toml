@@ -1,0 +1,20 @@
+# Known-answer-test (KAT) oracle probe for the Meilisearch filter-parser integration.
+# Standalone crate under mayhem/ — the [workspace] table keeps it OUT of the
+# Meilisearch root workspace's resolution (we never touch upstream's Cargo.toml /
+# Cargo.lock). It only CALLS the unmodified filter-parser library via a path dep.
+[package]
+name = "meili-filter-kat"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[[bin]]
+name = "meili-filter-kat"
+path = "src/main.rs"
+
+[dependencies.filter-parser]
+path = "../../crates/filter-parser"
+
+# Keep this crate out of the Meilisearch root workspace's resolution.
+[workspace]
+members = ["."]
