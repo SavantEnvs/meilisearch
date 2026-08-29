@@ -1,0 +1,35 @@
+# Additive libFuzzer fuzz crate for the Meilisearch filter-parser integration.
+#
+# A 1:1 port of upstream's own harness (crates/filter-parser/fuzz/fuzz_targets/parse.rs)
+# to an additive crate under mayhem/, so nothing upstream is touched. It depends on
+# the UNMODIFIED filter-parser crate by path and exposes the SAME target name
+# ("parse"), so the fuzzed code path matches upstream's own fuzz target.
+#
+# Standalone crate: the [workspace] table keeps it OUT of the Meilisearch root
+# workspace's resolution — which also means this crate commits its OWN Cargo.lock
+# (air-gap contract). The path-dep filter-parser still resolves its own
+# `*.workspace = true` package fields from the Meilisearch root workspace it lives in.
+[package]
+name = "meili-filter-parser-mayhem-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+[dependencies.filter-parser]
+path = "../../crates/filter-parser"
+
+[[bin]]
+name = "parse"
+path = "fuzz_targets/parse.rs"
+test = false
+doc = false
+
+# Keep this crate out of the Meilisearch root workspace's resolution.
+[workspace]
+members = ["."]
